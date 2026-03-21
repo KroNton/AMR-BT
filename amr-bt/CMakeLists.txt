@@ -9,8 +9,12 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
-find_package(behaviortree_cpp REQUIRED)
+find_package(rclcpp_action REQUIRED)
+find_package(nav2_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(tf2 REQUIRED)
+find_package(tf2_geometry_msgs REQUIRED)
+find_package(behaviortree_cpp REQUIRED)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -23,5 +27,23 @@ if(BUILD_TESTING)
   set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
 endif()
+
+add_executable(nav2_send_waypoint_client
+  src/nav2_send_waypoint_client.cpp
+)
+
+
+ament_target_dependencies(nav2_send_waypoint_client
+  rclcpp
+  rclcpp_action
+  nav2_msgs
+  geometry_msgs
+  tf2
+  tf2_geometry_msgs
+)
+
+install(TARGETS nav2_send_waypoint_client
+  DESTINATION lib/${PROJECT_NAME}
+)
 
 ament_package()
