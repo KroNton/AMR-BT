@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4">
+  <BehaviorTree ID="Untitled">
+    <Sequence>
+      <SendWaypointAction action_name="navigate_to_pose" pose_x="-0.356" pose_y="5.2" pose_yaw="90.0"/>
+    </Sequence>
+  </BehaviorTree>
+</root>
