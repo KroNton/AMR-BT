@@ -63,13 +63,38 @@ install(TARGETS
   DESTINATION lib/${PROJECT_NAME}
 )
 
+
 target_include_directories(send_nav2_goal_action_node
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
 )
 
-install(TARGETS send_nav2_goal_action_node
+
+add_library(rotate_action_node SHARED
+  src/rotate_action_node.cpp
+)
+
+ament_target_dependencies(rotate_action_node
+  rclcpp
+  rclcpp_action
+  behaviortree_cpp
+  behaviortree_ros2
+  nav2_msgs
+  geometry_msgs
+  tf2
+  tf2_geometry_msgs
+)
+
+target_include_directories(rotate_action_node
+  PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+)
+
+install(TARGETS 
+  send_nav2_goal_action_node
+  rotate_action_node
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
@@ -83,7 +108,8 @@ ament_target_dependencies(amr_bt_main
 )
 
 target_link_libraries(amr_bt_main
-  send_nav2_goal_action_node  # link your BT node library
+  send_nav2_goal_action_node 
+  rotate_action_node
 )
 
 install(TARGETS amr_bt_main
