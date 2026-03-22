@@ -15,6 +15,7 @@ find_package(geometry_msgs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 find_package(behaviortree_cpp REQUIRED)
+find_package(behaviortree_ros2 REQUIRED)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -42,8 +43,31 @@ ament_target_dependencies(nav2_send_waypoint_client
   tf2_geometry_msgs
 )
 
-install(TARGETS nav2_send_waypoint_client
+add_library(send_nav2_goal_action_node SHARED
+  src/send_nav2_goal_action_node.cpp
+)
+
+ament_target_dependencies(send_nav2_goal_action_node
+  rclcpp
+  rclcpp_action
+  behaviortree_cpp
+  behaviortree_ros2
+  nav2_msgs
+  geometry_msgs
+  tf2
+  tf2_geometry_msgs
+)
+
+install(TARGETS 
+  nav2_send_waypoint_client
   DESTINATION lib/${PROJECT_NAME}
 )
+
+install(TARGETS send_nav2_goal_action_node
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+
 
 ament_package()
