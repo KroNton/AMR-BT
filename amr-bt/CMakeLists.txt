@@ -63,11 +63,31 @@ install(TARGETS
   DESTINATION lib/${PROJECT_NAME}
 )
 
+target_include_directories(send_nav2_goal_action_node
+  PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+)
+
 install(TARGETS send_nav2_goal_action_node
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
 )
 
+add_executable(amr_bt_main src/main.cpp)
+
+ament_target_dependencies(amr_bt_main
+  rclcpp
+  behaviortree_ros2
+)
+
+target_link_libraries(amr_bt_main
+  send_nav2_goal_action_node  # link your BT node library
+)
+
+install(TARGETS amr_bt_main
+  DESTINATION lib/${PROJECT_NAME}
+)
 
 ament_package()
