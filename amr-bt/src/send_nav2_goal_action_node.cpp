@@ -1,5 +1,5 @@
 #include "amr-bt/send_nav2_goal_action_node.hpp"
-
+#include "behaviortree_ros2/plugins.hpp"
 // ── Constructor ────────────────────────────────────────────────────────────
 
 SendWaypointAction::SendWaypointAction(const std::string& name,
@@ -83,4 +83,23 @@ BT::NodeStatus SendWaypointAction::onFailure(BT::ActionNodeErrorCode error)
 {
   RCLCPP_ERROR(logger(), "Action failed — error code: %d", error);
   return BT::NodeStatus::FAILURE;
+}
+
+BT_REGISTER_NODES(factory)
+{
+  factory.registerBuilder<SendWaypointAction>(
+    "SendWaypointAction",
+    [](const std::string& name, const BT::NodeConfig& conf)
+    {
+      // read node handle from blackboard — set by main.cpp
+      auto node = conf.blackboard->get<rclcpp::Node::SharedPtr>("node");
+
+      BT::RosNodeParams params;
+      params.nh = node;
+      params.default_port_value    = "navigate_to_pose";
+      params.server_timeout        = std::chrono::milliseconds(5000);
+      params.wait_for_server_timeout = std::chrono::milliseconds(10000);
+
+      return std::make_unique<SendWaypointAction>(name, conf, params);
+    });
 }

@@ -1,7 +1,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "behaviortree_ros2/bt_action_node.hpp"
 #include "behaviortree_cpp/bt_factory.h"
-#include "ament_index_cpp/get_package_prefix.hpp"  // ✅ add this
+#include "ament_index_cpp/get_package_prefix.hpp" 
 
 int main(int argc, char **argv)
 {
@@ -16,15 +16,15 @@ int main(int argc, char **argv)
   factory.registerFromPlugin(pkg_lib + "libsend_nav2_goal_action_node.so");
   factory.registerFromPlugin(pkg_lib + "librotate_action_node.so");
 
-  // ✅ create blackboard first and set values on it
+  // create blackboard first and set values on it
   auto blackboard = BT::Blackboard::create();
   blackboard->set("node", node);
   blackboard->set("action_name", std::string("navigate_to_pose"));
 
-  // ✅ pass blackboard INTO createTreeFromFile — not after
+  //  pass blackboard INTO createTreeFromFile — not after
   auto tree = factory.createTreeFromFile(
-    "/home/kronton/ros2_ws/src/AMR-BT/amr-bt/behavior_trees/tree.xml",
-    blackboard);  // ← blackboard passed here
+    "/home/kronton/ros2_ws/src/AMR-BT/security_behavior/behavior_trees/tree.xml",
+    blackboard); 
 
   tree.tickWhileRunning();
 
