@@ -1,9 +1,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "behaviortree_ros2/bt_action_node.hpp"
 #include "behaviortree_cpp/bt_factory.h"
-
-#include "amr-bt/send_nav2_goal_action_node.hpp"
-#include "amr-bt/rotate_action_node.hpp"
+#include "ament_index_cpp/get_package_prefix.hpp"  // ✅ add this
 
 int main(int argc, char **argv)
 {
@@ -12,26 +10,22 @@ int main(int argc, char **argv)
 
   BT::BehaviorTreeFactory factory;
 
-  BT::RosNodeParams params;
-  params.nh = node;
-  params.wait_for_server_timeout = std::chrono::milliseconds(10000); // time to wait for server at startup
+  const std::string pkg_lib =
+    ament_index_cpp::get_package_prefix("amr-bt") + "/lib/";
 
-  factory.registerNodeType<SendWaypointAction>("SendWaypointAction", params);
-  // RotateAction takes node handle directly
-  factory.registerBuilder<RotateAction>(
-      "RotateAction",
-      [node](const std::string &name, const BT::NodeConfig &conf)
-      {
-        return std::make_unique<RotateAction>(name, conf, node);
-      });
+  factory.registerFromPlugin(pkg_lib + "libsend_nav2_goal_action_node.so");
+  factory.registerFromPlugin(pkg_lib + "librotate_action_node.so");
 
-  // Load your XML tree
-  auto tree = factory.createTreeFromFile("/home/kronton/ros2_ws/src/AMR-BT/amr-bt/behavior_trees/tree.xml");
+  // ✅ create blackboard first and set values on it
+  auto blackboard = BT::Blackboard::create();
+  blackboard->set("node", node);
+  blackboard->set("action_name", std::string("navigate_to_pose"));
 
-  // set action_name on the blackboard before ticking
-  // tree.rootBlackboard()->set("action_name", std::string("navigate_to_pose"));
+  // ✅ pass blackboard INTO createTreeFromFile — not after
+  auto tree = factory.createTreeFromFile(
+    "/home/kronton/ros2_ws/src/AMR-BT/amr-bt/behavior_trees/tree.xml",
+    blackboard);  // ← blackboard passed here
 
-  // Tick until done
   tree.tickWhileRunning();
 
   rclcpp::shutdown();

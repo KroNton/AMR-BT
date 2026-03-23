@@ -29,22 +29,13 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-add_executable(nav2_send_waypoint_client
-  src/nav2_send_waypoint_client.cpp
-)
-
-
-ament_target_dependencies(nav2_send_waypoint_client
-  rclcpp
-  rclcpp_action
-  nav2_msgs
-  geometry_msgs
-  tf2
-  tf2_geometry_msgs
-)
 
 add_library(send_nav2_goal_action_node SHARED
   src/send_nav2_goal_action_node.cpp
+)
+
+target_compile_definitions(send_nav2_goal_action_node
+  PRIVATE BT_PLUGIN_EXPORT
 )
 
 ament_target_dependencies(send_nav2_goal_action_node
@@ -58,11 +49,6 @@ ament_target_dependencies(send_nav2_goal_action_node
   tf2_geometry_msgs
 )
 
-install(TARGETS 
-  nav2_send_waypoint_client
-  DESTINATION lib/${PROJECT_NAME}
-)
-
 
 target_include_directories(send_nav2_goal_action_node
   PUBLIC
@@ -73,6 +59,10 @@ target_include_directories(send_nav2_goal_action_node
 
 add_library(rotate_action_node SHARED
   src/rotate_action_node.cpp
+)
+
+target_compile_definitions(rotate_action_node
+  PRIVATE BT_PLUGIN_EXPORT
 )
 
 ament_target_dependencies(rotate_action_node

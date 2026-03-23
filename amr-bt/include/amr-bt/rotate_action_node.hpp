@@ -12,9 +12,8 @@
 class RotateAction : public BT::StatefulActionNode
 {
 public:
-  RotateAction(const std::string& name,
-               const BT::NodeConfig& conf,
-               rclcpp::Node::SharedPtr node);
+RotateAction(const std::string& name,
+             const BT::NodeConfig& conf);
 
   static BT::PortsList providedPorts();
 

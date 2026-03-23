@@ -1,15 +1,20 @@
 #include "amr-bt/rotate_action_node.hpp"
+#include "behaviortree_ros2/plugins.hpp"
 
 // ── Constructor ────────────────────────────────────────────────────────────
 
 RotateAction::RotateAction(const std::string& name,
-                           const BT::NodeConfig& conf,
-                           rclcpp::Node::SharedPtr node)
-  : BT::StatefulActionNode(name, conf),
-    node_(node)
+                           const BT::NodeConfig& conf)
+  : BT::StatefulActionNode(name, conf)
 {
-  cmd_vel_pub_ = node_->create_publisher<geometry_msgs::msg::Twist>(
+  // get the node handle from the blackboard
+  // it was put there by main.cpp before ticking
+  auto node = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
+
+  cmd_vel_pub_ = node->create_publisher<geometry_msgs::msg::Twist>(
     "/cmd_vel", 10);
+
+  node_ = node;
 }
 
 // ── Ports ──────────────────────────────────────────────────────────────────
@@ -117,4 +122,10 @@ void RotateAction::stopRobot()
   stop.angular.z = 0.0;
   stop.linear.x  = 0.0;
   cmd_vel_pub_->publish(stop);
+}
+
+BT_REGISTER_NODES(factory)
+{
+  // StatefulActionNode — no RosNodeParams needed
+  factory.registerNodeType<RotateAction>("RotateAction");
 }
