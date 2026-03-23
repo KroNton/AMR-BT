@@ -23,7 +23,7 @@ int main(int argc, char **argv)
 
   //  pass blackboard INTO createTreeFromFile — not after
   auto tree = factory.createTreeFromFile(
-    "/home/kronton/ros2_ws/src/AMR-BT/amr-bt/behavior_trees/tree.xml",
+    "/home/kronton/ros2_ws/src/AMR-BT/security_behavior/behavior_trees/tree.xml",
     blackboard); 
 
   tree.tickWhileRunning();
